@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,10 +6,12 @@ public class Surfer : MonoBehaviour
 {
     private float _lastFrameFingerPositionX;
     private float _moveFactorX;
-    public float MoveFactorX => _moveFactorX;
 
-    [SerializeField] private float swerveSpeed = 0.5f;
-    [SerializeField] private float maxSwerveAmount = 1f;
+    [SerializeField] private SurferCube _surferCubePrefab;
+    [SerializeField] private float swerveSpeed = 1.5f;
+    [SerializeField] private float maxSwerveAmount = 1.5f;
+
+    public float MoveFactorX => _moveFactorX;
 
     private void Update()
     {
@@ -36,5 +37,19 @@ public class Surfer : MonoBehaviour
         float swerveAmount = Time.deltaTime * swerveSpeed * MoveFactorX;
         swerveAmount = Mathf.Clamp(swerveAmount, -maxSwerveAmount, maxSwerveAmount);
         transform.Translate(swerveAmount, 0, 0);
+    }
+
+    public void CollectCube()
+    {
+        Vector3 newPos = transform.position;
+        newPos.y += 0.62f;
+        transform.position = newPos;
+        SurferCube cube = Instantiate(_surferCubePrefab, transform);
+    }
+
+    public void RemoveCube()
+    {
+        if (transform.childCount <= 0)
+            GameManager.instance.FailGame();
     }
 }
