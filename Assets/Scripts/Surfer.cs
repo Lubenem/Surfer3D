@@ -13,6 +13,13 @@ public class Surfer : MonoBehaviour
 
     public float MoveFactorX => _moveFactorX;
 
+    private void Start()
+    {
+#if !UNITY_EDITOR
+    swerveSpeed /= 2.5f;
+#endif
+    }
+
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
