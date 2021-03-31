@@ -1,34 +1,40 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Surfer : MonoBehaviour
 {
-    [SerializeField] private Vector3 _movementVector;
-    private Camera mainCamera;
-    [SerializeField] private float _speed = 10f;
-    [SerializeField] private float xAxisLimit = 0.2f;
-    [SerializeField] private float DebugXaxis;
+    private float _lastFrameFingerPositionX;
+    private float _moveFactorX;
+    public float MoveFactorX => _moveFactorX;
 
-    private void Start()
-    {
-        mainCamera = Camera.main;
-    }
+    [SerializeField] private float swerveSpeed = 0.5f;
+    [SerializeField] private float maxSwerveAmount = 1f;
 
     private void Update()
     {
-        float xAxis = 0f;
+        if (Input.GetMouseButtonDown(0))
+        {
+            _lastFrameFingerPositionX = Input.mousePosition.x;
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            _moveFactorX = Input.mousePosition.x - _lastFrameFingerPositionX;
+            _lastFrameFingerPositionX = Input.mousePosition.x;
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            _moveFactorX = 0f;
+        }
 
-        if (Input.GetMouseButton(0))
-            xAxis = Input.GetAxis("Mouse X");
-        else
-            xAxis = 0f;
+        Move();
+    }
 
-        Mathf.Clamp(xAxis, -xAxisLimit, xAxisLimit);
-
-        DebugXaxis = xAxis;
-
-        _movementVector = Vector3.Lerp(_movementVector, new Vector3(xAxis, 0f, 0f), _speed * Time.deltaTime);
-
-        transform.Translate(_movementVector);
+    private void Move()
+    {
+        float swerveAmount = Time.deltaTime * swerveSpeed * MoveFactorX;
+        swerveAmount = Mathf.Clamp(swerveAmount, -maxSwerveAmount, maxSwerveAmount);
+        transform.Translate(swerveAmount, 0, 0);
     }
 }
