@@ -16,8 +16,8 @@ public class Surfer : MonoBehaviour
     private void Start()
     {
 #if !UNITY_EDITOR
-    swerveSpeed = 0.3f;
-    maxSwerveAmount = 0.3f;
+    swerveSpeed = 0.5f;
+    maxSwerveAmount = 0.5f;
 #endif
     }
 
